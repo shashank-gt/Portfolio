@@ -6,7 +6,7 @@
 <title>ShashanK</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- No extra PDF scripts needed -->
 <style>
   :root {
     --cream: #f0ece0;
@@ -1076,113 +1076,15 @@ function handleSend() {
 
 // ===================== RESUME DOWNLOAD =====================
 function downloadResume() {
-  if (typeof html2pdf === 'undefined') {
-    alert("Resume generator is still loading or could not be reached. Please check your connection.");
-    return;
-  }
-
-  const btn = document.querySelector('.download-btn');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = "Generating PDF...";
-  btn.disabled = true;
-
-  const resumeHTML = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>
-  body { font-family: 'Arial', sans-serif; margin: 40px; color: #222; font-size: 13px; line-height: 1.5; }
-  h1 { font-size: 22px; color: #4a5940; margin-bottom: 2px; }
-  .contact { font-size: 11px; color: #666; margin-bottom: 16px; }
-  h2 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #4a5940; border-bottom: 2px solid #c8d4b8; padding-bottom: 3px; margin: 16px 0 8px; }
-  .item { margin-bottom: 10px; }
-  .item-header { display: flex; justify-content: space-between; font-weight: bold; }
-  .item-sub { font-style: italic; color: #555; font-size: 12px; }
-  ul { margin: 4px 0 0 16px; padding: 0; }
-  li { margin-bottom: 2px; font-size: 12px; }
-  .skills-line { font-size: 12px; margin-bottom: 4px; }
-</style>
-</head>
-<body>
-<h1>Shashank H K</h1>
-<div class="contact">Coimbatore &nbsp;|&nbsp; shashankhk25@gmail.com &nbsp;|&nbsp; +91 93630 16466 &nbsp;|&nbsp; linkedin.com/in/shashank-h-k &nbsp;|&nbsp; github.com/Shashank-gt</div>
-
-<h2>Profile</h2>
-<p>Motivated AI &amp; ML engineer with hands-on experience building end-to-end intelligent systems across computer vision, NLP, and data pipelines. Passionate about practical AI solutions to real-world problems.</p>
-
-<h2>Education</h2>
-<div class="item">
-  <div class="item-header"><span>KPR Institute of Engineering and Technology</span><span>2023 – 2027</span></div>
-  <div class="item-sub">B.E. Computer Science &amp; Engineering (AI &amp; ML) &nbsp;|&nbsp; CGPA: 8.10 / 10.0</div>
-  <div style="font-size:11px;color:#666;margin-top:3px">Coursework: Machine Learning, Deep Learning, Data Structures, Computer Vision</div>
-</div>
-
-<h2>Experience</h2>
-<div class="item">
-  <div class="item-header"><span>Data Science Intern — CodSoft</span><span>January 2025</span></div>
-  <ul>
-    <li>Engineered end-to-end ML pipelines: data preprocessing, EDA, feature engineering, model training &amp; evaluation</li>
-    <li>Designed and validated supervised learning models across real-world datasets</li>
-    <li>Strengthened analytical problem-solving skills through diverse data challenges</li>
-  </ul>
-</div>
-
-<h2>Projects</h2>
-<div class="item">
-  <div class="item-header"><span>PaperInsight — Intelligent Research Paper Analyzer</span></div>
-  <div class="item-sub">Python · Flask · LLM APIs · Sentence Transformers · FAISS · PyPDF</div>
-  <ul>
-    <li>Built AI-powered PDF analysis system with 90%+ accuracy in extracting structured insights</li>
-    <li>Developed multi-agent LLM pipeline with FAISS vector store for semantic Q&amp;A</li>
-    <li>Designed interactive Flask dashboard for visualizing research findings</li>
-  </ul>
-</div>
-<div class="item">
-  <div class="item-header"><span>Emoticon — Real-Time Facial Emotion Recognition</span></div>
-  <div class="item-sub">Python · TensorFlow · Keras · OpenCV · FER2013</div>
-  <ul>
-    <li>Trained CNN model on FER2013 achieving 85%+ recognition accuracy</li>
-    <li>Implemented real-time face detection and emotion inference from live webcam via OpenCV</li>
-    <li>Created interactive GUI with emoji mapping for predicted emotional states</li>
-  </ul>
-</div>
-<div class="item">
-  <div class="item-header"><span>Plagiarism Detection System</span></div>
-  <div class="item-sub">Python · Scikit-learn · PyPDF2 · Tesseract OCR · Poppler</div>
-  <ul>
-    <li>Achieved 88%+ detection accuracy using TF-IDF and cosine similarity</li>
-    <li>Integrated Tesseract OCR for text extraction from scanned PDFs</li>
-  </ul>
-</div>
-
-<h2>Technical Skills</h2>
-<div class="skills-line"><strong>Languages:</strong> Python, Java, C, SQL</div>
-<div class="skills-line"><strong>Machine Learning:</strong> TensorFlow, Keras, Scikit-learn, Supervised Learning</div>
-<div class="skills-line"><strong>Computer Vision:</strong> OpenCV, CNN Architectures, Image Preprocessing</div>
-<div class="skills-line"><strong>Data Tools:</strong> Pandas, NumPy, Matplotlib, EDA</div>
-<div class="skills-line"><strong>Developer Tools:</strong> Git, VS Code, Flask, FAISS, PyPDF</div>
-</body>
-</html>`;
-
-  const worker = html2pdf();
-  const opt = {
-    margin: 10,
-    filename: 'Shashank.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true },
-    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-  };
-
-  worker.set(opt).from(resumeHTML).save().then(() => {
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  }).catch(err => {
-    console.error(err);
-    alert("An error occurred while generating the PDF. Please try again.");
-    btn.innerHTML = originalText;
-    btn.disabled = false;
-  });
+  // Directly download the existing Shashank.pdf file
+  const link = document.createElement('a');
+  link.href = 'Shashank.pdf';
+  link.download = 'Shashank.pdf';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
+
 
 </script>
 </body>
