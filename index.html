@@ -1076,12 +1076,20 @@ function handleSend() {
 
 // ===================== RESUME DOWNLOAD =====================
 function downloadResume() {
-  // Generate a clean printable resume HTML and trigger download as PDF via print
+  if (typeof html2pdf === 'undefined') {
+    alert("Resume generator is still loading or could not be reached. Please check your connection.");
+    return;
+  }
+
+  const btn = document.querySelector('.download-btn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = "Generating PDF...";
+  btn.disabled = true;
+
   const resumeHTML = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Shashank HK - Resume</title>
 <style>
   body { font-family: 'Arial', sans-serif; margin: 40px; color: #222; font-size: 13px; line-height: 1.5; }
   h1 { font-size: 22px; color: #4a5940; margin-bottom: 2px; }
@@ -1093,7 +1101,6 @@ function downloadResume() {
   ul { margin: 4px 0 0 16px; padding: 0; }
   li { margin-bottom: 2px; font-size: 12px; }
   .skills-line { font-size: 12px; margin-bottom: 4px; }
-  @media print { body { margin: 20px; } }
 </style>
 </head>
 <body>
@@ -1157,21 +1164,26 @@ function downloadResume() {
 </body>
 </html>`;
 
-  const blob = new Blob([resumeHTML], {type: 'text/html'});
-  const url = URL.createObjectURL(blob);
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = resumeHTML;
-  const element = tempDiv.querySelector('body');
+  const worker = html2pdf();
   const opt = {
     margin: 10,
-    filename: 'Shashank_HK_Resume.pdf',
+    filename: 'Shashank.pdf',
     image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
+    html2canvas: { scale: 2, useCORS: true },
     jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
   };
-  html2pdf().set(opt).from(element).save();
-  setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+  worker.set(opt).from(resumeHTML).save().then(() => {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).catch(err => {
+    console.error(err);
+    alert("An error occurred while generating the PDF. Please try again.");
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  });
 }
+
 </script>
 </body>
 </html>
